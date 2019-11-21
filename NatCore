@@ -1,0 +1,18 @@
+( \(Result : *)
+→ \(callback : ( ∀(Nat     : *)
+               → ∀(zero    : Nat)
+               → ∀(inc     : Nat → Nat)
+               → ∀(foldNat : Nat → ∀(a:*) → a → (a → a) → a)
+               → Result
+               ))
+→ callback
+    (∀(a:*) → a → (a → a) → a)
+    (\(a:*) → \(z:a) → \(i:a→a) → z)
+    ( \(v : (∀(a:*) → a → (a → a) → a))
+    → ( \(a:*)
+      → \(z:a)
+      → \(i:a→a) → i (v a z i)
+      )
+    )
+    ( \(v : (∀(a:*) → a → (a → a) → a)) → v )
+)

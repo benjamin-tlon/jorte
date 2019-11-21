@@ -1,0 +1,22 @@
+( \(Result : *)
+→ \(callback : ( ∀(Bool  : *)
+               → ∀(true  : Bool)
+               → ∀(false : Bool)
+               → ∀(if    : Bool → ∀(a:*) → a → a → a)
+               → ∀(not   : Bool → Bool)
+               → ∀(and   : Bool → Bool → Bool)
+               → ∀(or    : Bool → Bool → Bool)
+               → Result
+               ))
+→ ./BoolCore
+  Result
+  ( \(Bool  : *)
+  → \(true  : Bool)
+  → \(false : Bool)
+  → \(if    : Bool → ∀(a:*) → a → a → a)
+  → callback Bool true false if
+      (λ(x:Bool) → if x Bool false true)              --  not
+      (λ(x:Bool) → λ(y:Bool) → if x Bool y false)     --  and
+      (λ(x:Bool) → λ(y:Bool) → if x Bool true y)      --  or
+  )
+)

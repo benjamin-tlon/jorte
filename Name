@@ -1,0 +1,11 @@
+( \(Str : *)
+→ \(Res : *)
+→ \(callback : ∀( Name    : *           )
+             → ∀( MkName  : Str -> Name )
+             → ∀( getName : Name -> Str )
+             → Res)
+→ user
+    Str                   --  Name
+    (\(str : Str) → str)  --  MkName
+    (\(str : Str) → str)  --  getName
+)

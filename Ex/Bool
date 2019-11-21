@@ -1,0 +1,11 @@
+./Bool (∀(a:*) → a → a → a)
+
+( \(Bool  : *)
+→ \(true  : Bool)
+→ \(false : Bool)
+→ \(if    : Bool → ∀(a:*) → a → a → a)
+→ \(not   : Bool → Bool)
+→ \(and   : Bool → Bool → Bool)
+→ \(or    : Bool → Bool → Bool)
+→ if (or (not true) (not false))
+)

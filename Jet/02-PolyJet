@@ -1,0 +1,59 @@
+--
+--  First attempt at jetting polymorphic functions.
+--
+--  This jets the identity function and fires it using fireP, but this
+--  only works on polymorphic functions with type (a→a).
+--
+--  A more general approach is needed!
+--
+
+( \(Nat     : *)
+→ \(zero    : Nat)
+→ \(inc     : Nat → Nat)
+→ \(foldNat : Nat → ∀(a:*) → a → (a → a) → a)
+→ \(id      : ∀(a:*) → a → a)
+→ \(Jet     : * → *)
+→ \(jet     : ∀(a:*) → a → Jet a)
+→ \(unjet   : ∀(a:*) → Jet a → a)
+→ \(fireV   : ∀(a:*) → ∀(b:*) → Jet (a → b) → a → b)
+→ \(fireVV  : ∀(a:*) → ∀(b:*) → ∀(c:*) → Jet (a → b → c) → a → b → c)
+→ \(fireAA  : ∀(a:*) → Jet (∀(b:*) → b → b) → a → a)
+
+-- → fireVV
+--     *
+--     Nat
+--     Nat
+--     (jet (∀(a:*) → a → a) id)
+--     Nat
+--     zero
+
+→ fireAA
+    Nat
+    (jet (∀(a:*) → a → a) id)
+    zero
+)
+
+(∀(a:*) → a → (a → a) → a)                            --  Nat
+
+( \(a:*) → \(zer:a) → \(inc:a→a)                      --  zero
+→ zer
+)
+
+( \(v : (∀(a:*) → a → (a → a) → a))                   --  inc
+→ ( \(a:*) → \(zer:a) → \(inc:a→a)
+  → inc (v a zer inc)
+  )
+)
+
+( \(v : (∀(a:*) → a → (a → a) → a))                   --  foldNat
+→ v
+)
+
+(\(a:*) → \(x:a) → x)                                 --  id
+
+(\(a:*) → a)                                          --  Jet
+(\(a:*) → \(x:a) → x)                                 --  jet
+(\(a:*) → \(x:a) → x)                                 --  unjet
+(\(a:*) → \(b:*) → \(f : a → b) → f)                  --  fireV
+(\(a:*) → \(b:*) → \(c:*) → \(f : a → b → c) → f)     --  fireVV
+(\(a:*) → \(f : (∀(b:*) → b → b)) → (f a))            --  fireP

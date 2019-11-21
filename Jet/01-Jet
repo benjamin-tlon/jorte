@@ -1,0 +1,132 @@
+--
+--  # What is a jet?
+--
+--  A jet is a normal value, except that we want the runtime system to
+--  do something smarter with it. In particular:
+--
+--  - Jetted values are deduplicated.
+--  - Jetted values are persisted as hash-addressed files.
+--  - Jetted functions are optimized.
+--  - One particular form of optimization is "jet matching"
+--  - Jet matching replaces specific functions with optimized representations.
+--
+--  That's easy enough. Just supply primitives:
+--
+--      type Jet a
+--      jet : a → Jet a
+--      tej : Jet a → a
+--      app : (Jet (a → b), a) → b
+--
+--  The big open question are:
+--
+--  1. What if a jetted function takes multiple arguments?
+--
+--    - I'll just use `fire1`, `fire2`, etc to punt on this question.
+--
+--  2. What if a jetted function is polymorphic?
+--
+--    - How do I supply the type arguments?
+--
+--  3. What if I jet functions provided by the runtime?
+--
+--    - For example, what if I jet the `jet` function?
+--
+--    - `jet jet :: Jet (∀(a:*) → a → Jet a)`
+--
+--    - This makes total sense in the language, but jets on-disk are
+--      supposed to be moloch ASTs! `jet` is some function that the
+--      runtime system provides, so it has no representation in the AST.
+--
+
+( \(Nat     : *)
+→ \(zero    : Nat)
+→ \(inc     : Nat → Nat)
+→ \(foldNat : Nat → ∀(a:*) → a → (a → a) → a)
+
+→ \(Jet    : * → *)
+→ \(jet    : ∀(a:*) → a → Jet a)
+→ \(unjet  : ∀(a:*) → Jet a → a)
+→ \(fire1  : ∀(a:*) → ∀(b:*) → Jet (a → b) → a → b)
+→ \(fire2  : ∀(a:*) → ∀(b:*) → ∀(c:*) → Jet (a → b → c) → a → b → c)
+
+→ (
+    \(add : Nat → Nat → Nat) →
+    add (inc (inc zero)) (inc zero)
+  )
+
+  (
+    --  Wraps the jet with a closure to expose it as a normal function.
+    ( \(addJet : Jet (Nat → Nat → Nat)) →
+      \(x:Nat) →
+      \(y:Nat) →
+      fire2 Nat Nat Nat addJet x y)
+
+    --  Jetted Add
+    ( jet (Nat -> Nat -> Nat)
+        ( \(x:Nat) →
+          \(y:Nat) →
+          (foldNat x Nat y inc)
+        )
+    )
+  )
+)
+
+-- Nat
+(∀(a:*) → a → (a → a) → a)
+
+-- zero
+( \ (a:*) → \(zer:a) → \(inc:a→a)
+  → zer
+)
+
+-- inc
+(
+  \ (v : (∀(a:*) → a → (a → a) → a))
+  → (\(a:*) → \(zer:a) → \(inc:a→a) → inc (v a zer inc))
+)
+
+-- foldNat
+( \(v : (∀(a:*) → a → (a → a) → a))
+  → v
+)
+
+-- Jet
+(\(a:*) → a)
+
+
+--
+--  If you squint, this evaluates to the following:
+--
+--      fire2 Nat Nat Nat
+--      JETTED_ADD
+--      2
+--      1
+--
+
+
+--
+--  If you uncomment this no-op implementation of jets.
+--
+--      (\(a:*) → \(x:a) → x)                              -- jet
+--      (\(a:*) → \(x:a) → x)                              -- unjet
+--      (\(a:*) → \(b:*) → \(f : a → b) → f)               -- fire1
+--      (\(a:*) → \(b:*) → \(c:*) → \(f : a → b → c) → f)  -- fire2
+--
+--  Then it evalutes to:
+--
+--      3
+--
+
+
+--
+--  For convenience, we could implement
+--
+--  jet1 :: (a → b)     → (a → b)
+--  jet2 :: (a → b → c) → (a → b → c)
+--
+--  These would just jet their arguments and produce functions that
+--  fire them.
+--
+--  The convenience wrappers will be evaluated away, leaving the raw
+--  calls to `jet`, `fire1`, and `fire2`.
+--

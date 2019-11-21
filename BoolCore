@@ -1,0 +1,13 @@
+( \(Result : *)
+→ \(callback : ( ∀(Bool  : *)
+               → ∀(true  : Bool)
+               → ∀(false : Bool)
+               → ∀(if    : Bool → ∀(a:*) → a → a → a)
+               → Result
+               ))
+→ callback
+    (∀(a:*) → a → a → a)                                --  Bool
+    (\(a:*) → \(x:a) → \(y:a) → x)                      --  true
+    (\(a:*) → \(x:a) → \(y:a) → y)                      --  false
+    (\(x : ∀(b:*) → b → b → b) → x)                     --  if
+)
