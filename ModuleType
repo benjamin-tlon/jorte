@@ -1,0 +1,6 @@
+( \(Module : * → *)
+→ ( ∀(Result : *)
+  → ∀(callback : Module Result)
+  → Result
+  )
+)

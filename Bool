@@ -1,13 +1,5 @@
 ( \(Result : *)
-→ \(callback : ( ∀(Bool  : *)
-               → ∀(true  : Bool)
-               → ∀(false : Bool)
-               → ∀(if    : Bool → ∀(a:*) → a → a → a)
-               → ∀(not   : Bool → Bool)
-               → ∀(and   : Bool → Bool → Bool)
-               → ∀(or    : Bool → Bool → Bool)
-               → Result
-               ))
+→ \(callback : ./BOOL Result)
 → ./BoolCore
   Result
   ( \(Bool  : *)

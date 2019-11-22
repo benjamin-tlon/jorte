@@ -1,10 +1,16 @@
-( \(Result : *)
+( \(Jet  : * → *)
+→ \(jet  : ∀(a:*) → a → Jet a)
+→ \(fire : ∀(a:*) → ∀(b:*) → Jet a → (a → b) → b)
+
+→ \(Result : *)
+
 → \(callback : ( ∀(Nat     : *)
                → ∀(zero    : Nat)
                → ∀(inc     : Nat → Nat)
                → ∀(foldNat : Nat → ∀(a:*) → a → (a → a) → a)
                → Result
                ))
+
 → callback
     (∀(a:*) → a → (a → a) → a)
     (\(a:*) → \(z:a) → \(i:a→a) → z)

@@ -1,0 +1,29 @@
+( \(Jet  : * → *)
+→ \(jet  : ∀(a:*) → a → Jet a)
+→ \(fire : ∀(a:*) → ∀(b:*) → Jet a → (a → b) → b)
+
+→ jet
+
+  ( ./ModuleType ./BOOL )
+
+  ( \(Result : *)
+  → \(k : ./BOOL Result)
+  → fire ( ./ModuleType ./BOOL_CORE )
+         Result
+         (./BoolCoreJet Jet jet fire)
+
+      ( \(boolCore : (∀(Result:*) → ./BOOL_CORE Result → Result))
+      → boolCore
+          Result
+          ( \(Bool  : *)
+          → \(true  : Bool)
+          → \(false : Bool)
+          → \(if    : Bool → ∀(a:*) → a → a → a)
+          → k Bool true false if
+              (λ(x:Bool) → if x Bool false true)              --  not
+              (λ(x:Bool) → λ(y:Bool) → if x Bool y false)     --  and
+              (λ(x:Bool) → λ(y:Bool) → if x Bool true y)      --  or
+          )
+      )
+  )
+)

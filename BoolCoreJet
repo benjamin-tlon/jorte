@@ -1,0 +1,5 @@
+( \(Jet  : * → *)
+→ \(jet  : ∀(a:*) → a → Jet a)
+→ \(fire : ∀(a:*) → ∀(b:*) → Jet a → (a → b) → b)
+→ jet ( ./ModuleType ./BOOL_CORE ) ./BoolCore
+)

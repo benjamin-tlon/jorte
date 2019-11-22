@@ -1,0 +1,39 @@
+--
+--  Same as Jet/01-Jet, except that the arguments to `fire` are inverted.
+--
+
+( \(Nat     : *)
+→ \(zero    : Nat)
+→ \(inc     : Nat → Nat)
+→ \(foldNat : Nat → ∀(a:*) → a → (a → a) → a)
+
+→ \(Jet  : * → *)
+→ \(jet  : ∀(a:*) → a → Jet a)
+→ \(fire : ∀(a:*) → ∀(b:*) → Jet a → (a → b) → b)
+
+→ (
+    \(add : Nat → Nat → Nat) →
+    add (inc (inc zero)) (inc zero)
+  )
+
+  (
+    --  Wraps the jet with a closure to expose it as a normal function.
+    ( \(addJet : Jet (Nat → Nat → Nat))
+    → \(x:Nat)
+    → \(y:Nat)
+    → fire (Nat → Nat → Nat) Nat
+        addJet
+        ( \(addRaw : (Nat → Nat → Nat))
+        → addRaw x y
+        )
+    )
+
+    --  Jetted Add
+    ( jet (Nat -> Nat -> Nat)
+        ( \(x:Nat) →
+          \(y:Nat) →
+          (foldNat x Nat y inc)
+        )
+    )
+  )
+)
